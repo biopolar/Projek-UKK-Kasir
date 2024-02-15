@@ -6,7 +6,26 @@
         $tanggal = $_POST['TanggalPenjualan'];
         $nama = $_POST['NamaPelanggan'];
         $nomeja = $_POST['nomor_meja'];
+        $menu_jumlah = $_POST['menu'];
+        $jumlah_array = $_POST['jumlah'];
+        $stok = true;
 
+        foreach ($menu_jumlah as $i => $item) {
+            $parts = explode("|", $item);
+            $produk_id = $parts[0];
+            $harga = $parts[1];
+            $jumlah = $jumlah_array[$i];
+
+            $sql_stok = $conn->query("SELECT Stok FROM produk WHERE ProdukID = '$produk_id'");
+            $row = $sql_stok->fetch_assoc();
+            $stok_produk = $row['Stok'];
+
+            if ($jumlah > $stok_produk) {
+                $stok = false;
+                break;
+            }
+        }
+        if ($stok) {
         // Menyisipkan data ke dalam tabel penjualan
         $sql_penjualan = $conn->query("INSERT INTO penjualan (TanggalPenjualan) VALUES ('$tanggal')");
         $id_transaksi_baru = $conn->insert_id; // Menggunakan insert_id dari objek koneksi
@@ -15,8 +34,7 @@
         $sql_pelanggan = $conn->query("INSERT INTO pelanggan (PelangganID, NamaPelanggan, nomor_meja) VALUES ('$id_transaksi_baru', '$nama', '$nomeja')");
         $id_pelanggan_baru = $conn->insert_id; // Menggunakan insert_id dari objek koneksi
 
-        $menu_jumlah = $_POST['menu'];
-        $jumlah_array = $_POST['jumlah'];
+        
 
         foreach ($menu_jumlah as $i => $item) {
             $item_parts = explode("|", $item);
@@ -34,12 +52,15 @@
 
             $sql4 = $conn->query("UPDATE produk SET Stok = Stok - $jumlah  WHERE ProdukID = '$produk_id'");
             $sql5 = $conn->query("UPDATE produk SET Terjual = Terjual + $jumlah WHERE ProdukID = '$produk_id'");
-
+            }
 
             header("Location: daftar-transaksi.php");
             exit();
+
+            } else {
+            echo "<script>alert('Maaf, jumlah pesanan melebihi stok yang tersedia. Silakan periksa kembali pesanan Anda.')</script>";
+                }
         }
-    }
     ?>
 
 
