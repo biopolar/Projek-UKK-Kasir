@@ -71,7 +71,8 @@ include("header.php");
                                 echo "</tr>";
 
                                 // Tambahkan Subtotal ke total harga
-                                $totalHarga += $detailrow['Subtotal'];
+                                $totalproduk = $detailrow['JumlahProduk'] * $detailrow['Subtotal'];
+                                $totalHarga += $totalproduk;
                             }
 
                             // Menampilkan total harga di luar loop
