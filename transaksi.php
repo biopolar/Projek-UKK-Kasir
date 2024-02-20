@@ -34,7 +34,6 @@
         $sql_pelanggan = $conn->query("INSERT INTO pelanggan (PelangganID, NamaPelanggan, nomor_meja) VALUES ('$id_transaksi_baru', '$nama', '$nomeja')");
         $id_pelanggan_baru = $conn->insert_id; // Menggunakan insert_id dari objek koneksi
 
-        
 
         foreach ($menu_jumlah as $i => $item) {
             $item_parts = explode("|", $item);
